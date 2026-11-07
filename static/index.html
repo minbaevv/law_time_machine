@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="ru"><head><meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>KanunTime — Машина времени + Суд КР</title>
+<title>KanunTime — Машина времени + Суд КР</title><link rel="icon" href="/static/favicon.svg"/>
 <meta name="description" content="Реальные тексты КоП и ГК КР с редакциями. Машина времени и симулятор суда на русском и кыргызском."/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
@@ -98,7 +98,7 @@ footer{background:#05070C;border-top:1px solid #1E2A3A;color:#9AA8C2;margin-top:
 .footer-inner{max-width:1160px;margin:0 auto;padding:34px 20px;display:grid;grid-template-columns:1.2fr .8fr;gap:20px}
 @media(max-width:860px){.footer-inner{grid-template-columns:1fr}}
 footer a{color:#7FB0FF}
-.reveal{opacity:0;transform:translateY(20px);transition:opacity .6s ease, transform .6s ease}
+.reveal{opacity:1;transform:none}
 .reveal.visible{opacity:1;transform:none}
 .reveal.delay1{transition-delay:.08s}.reveal.delay2{transition-delay:.16s}
 .fade-in{animation:fadeIn .45s ease both}
@@ -108,7 +108,7 @@ footer a{color:#7FB0FF}
 <div id="progressBar"></div>
 <header>
   <div class="header-inner reveal visible">
-    <div class="logo"><div class="logo-mark">KT</div><div><b>KanunTime</b><small data-i="tagline">Машина времени + Суд КР</small></div></div>
+    <div class="logo"><img src="/static/logo.svg" width="44" height="44" style="border-radius:10px;border:1px solid #2A3A52" alt="KanunTime"/><div><b>KanunTime</b><small data-i="tagline">Машина времени + Суд КР</small></div></div>
     <nav class="header-nav">
       <button class="nav-btn on" id="bT" onclick="navTo('t')" data-i="tab_time">Время</button>
       <button class="nav-btn" id="bS" onclick="navTo('s')" data-i="tab_sim">Суд</button>
@@ -128,7 +128,7 @@ footer a{color:#7FB0FF}
       <div>
         <span class="badge"><span data-i="badge">КоП 09.10.2026 · ГК 28.07.2026 · CBD Минюста</span></span>
         <h1><span data-i="hero_t1">Закон на твой год.</span> <em data-i="hero_t2">Суд — в игре.</em></h1>
-        <p class="lead" data-i="hero_lead">Не чат-бот, а машина времени: выбираешь год — видишь штраф и статью той редакции. Плюс симулятор суда под реальные статьи. На русском и кыргызском.</p>
+        <p class="lead" data-i="hero_lead">Выбираешь год — видишь штраф и статью. + суд в игре. RU/KY.</p>
         <div class="hero-cta">
           <button class="btn btn-gold" onclick="gotoApp('t')"><span data-i="cta1">Открыть машину времени</span></button>
           <button class="btn btn-ghost" onclick="gotoApp('s')"><span data-i="cta2">Запустить суд</span></button>
@@ -142,23 +142,23 @@ footer a{color:#7FB0FF}
           <div class="stat"><b><span class="count" data-to="5">0</span></b><span data-i="st2">сценариев</span></div>
           <div class="stat"><b><span class="count" data-to="2">0</span></b><span data-i="st3">кодекса</span></div>
         </div>
-        <p class="small" style="margin:14px 0 0" data-i="st_note">Цифры с API. Данные — только с редакциями и ссылками.</p>
+        <p class="small" style="margin:14px 0 0" data-i="st_note">Данные — с редакциями и ссылками CBD.</p>
       </div>
     </div>
   </div>
 </section>
 
 <section class="section" id="how">
-  <div class="section-head reveal"><div><h2 data-i="how_t">Как это работает</h2><p data-i="how_d">Три шага — и ты видишь закон глазами того года. Никаких выдуманных сумм.</p></div><span class="kbd">01 → 02 → 03</span></div>
+  <div class="section-head reveal"><div><h2 data-i="how_t">Как это работает</h2><p data-i="how_d">3 шага. Без выдуманных сумм.</p></div><span class="kbd">01 → 02 → 03</span></div>
   <div class="cards3">
     <div class="mini-card reveal"><div class="mini-num">01</div><h3 data-i="c1t">1. Выбери год</h3><p class="small" data-i="c1d">2015–2026. До 2019 действовал КоАП 1998, с 2019 — КоП. Покажем, почему дата решает.</p></div>
-    <div class="mini-card reveal delay1"><div class="mini-num">02</div><h3 data-i="c2t">2. Читай со ссылкой</h3><p class="small" data-i="c2d">Текст + номер статьи + редакция + ссылка в CBD. Без галлюцинаций.</p></div>
+    <div class="mini-card reveal delay1"><div class="mini-num">02</div><h3 data-i="c2t">2. Читай со ссылкой</h3><p class="small" data-i="c2d">Статья + редакция + ссылка CBD.</p></div>
     <div class="mini-card reveal delay2"><div class="mini-num">03</div><h3 data-i="c3t">3. Тренируйся в суде</h3><p class="small" data-i="c3d">Играй роль подсудимого. Судья спрашивает по настоящим статьям.</p></div>
   </div>
 </section>
 
 <section class="section" id="app">
-  <div class="section-head reveal"><div><h2 data-i="app_t">Приложение</h2><p data-i="app_d">Тот же API, что в тестах. Переключай вкладки — контент не перезагружается.</p></div></div>
+  <div class="section-head reveal"><div><h2 data-i="app_t">Приложение</h2><p data-i="app_d">Вкладки: время, суд, поиск, помощник.</p></div></div>
   <div class="app-shell reveal">
     <div class="app-top">
       <div class="tabs">
@@ -228,17 +228,17 @@ const I = {
   tab_time2:"Машина времени", tab_sim2:"Симулятор суда", tab_search2:"Поиск",
   badge:"КоП 09.10.2026 · ГК 28.07.2026 · CBD Минюста",
   hero_t1:"Закон на твой год.", hero_t2:"Суд — в игре.",
-  hero_lead:"Не чат-бот, а машина времени: выбираешь год — видишь штраф и статью той редакции. Плюс симулятор суда под реальные статьи. На русском и кыргызском.",
+  hero_lead:"Выбираешь год — видишь штраф и статью. + суд в игре. RU/KY.",
   cta1:"Открыть машину времени", cta2:"Запустить суд",
   trust:"Источник: CBD Минюста (через zakon.kg). Не юрконсультация.",
   live:"LIVE-ДАННЫЕ",
   st1:"статей", st2:"сценариев", st3:"кодекса",
-  st_note:"Цифры с API. Данные — только с редакциями и ссылками.",
-  how_t:"Как это работает", how_d:"Три шага — и ты видишь закон глазами того года. Никаких выдуманных сумм.",
+  st_note:"Данные — с редакциями и ссылками CBD.",
+  how_t:"Как это работает", how_d:"3 шага. Без выдуманных сумм.",
   c1t:"1. Выбери год", c1d:"2015–2026. До 2019 действовал КоАП 1998, с 2019 — КоП. Покажем, почему дата решает.",
-  c2t:"2. Читай со ссылкой", c2d:"Текст + номер статьи + редакция + ссылка в CBD. Без галлюцинаций.",
+  c2t:"2. Читай со ссылкой", c2d:"Статья + редакция + ссылка CBD.",
   c3t:"3. Тренируйся в суде", c3d:"Играй роль подсудимого. Судья спрашивает по настоящим статьям.",
-  app_t:"Приложение", app_d:"Тот же API, что в тестах. Переключай вкладки — контент не перезагружается.",
+  app_t:"Приложение", app_d:"Вкладки: время, суд, поиск, помощник.",
   choose_year:"Выбери год:", show_law:"Показать закон на этот год",
   scenario:"Сценарий:", start:"Начать", dl:"Скачать чек-лист .txt", find:"Найти",
   q_hint:"Подсказка: «187», «ст.90», «ГК 545» или «зарплат».",
@@ -300,7 +300,7 @@ function tab(x){tEl('t').style.display=x==='t'?'block':'none';tEl('s').style.dis
   if(x==='s'&&!loaded) loadSc();
 }
 function tEl(id){return document.getElementById(id)}
-function navTo(x){tab(x); setTimeout(()=>{document.getElementById('app').scrollIntoView({behavior:'smooth',block:'start'})},80)}
+function navTo(x){tab(x); document.getElementById('app').classList.add('visible'); setTimeout(()=>{document.getElementById('app').scrollIntoView({behavior:'smooth',block:'start'})},80)}
 function gotoApp(x){navTo(x)}
 async function j(u){return (await fetch(u)).json()}
 async function loadLaws(){
@@ -357,7 +357,7 @@ async function ask(){
   document.getElementById('aq').value='';
 }
 const io=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');
-  if(e.target.querySelector('.count')){e.target.querySelectorAll('.count').forEach(c=>{const to=+c.dataset.to; let cc=0; const iv=setInterval(()=>{cc++; c.textContent=cc; if(cc>=to) clearInterval(iv)},60)})}
+  if(e.target.querySelector('.count')){e.target.querySelectorAll('.count').forEach(c=>{const to=+c.dataset.to; let cc=0; const step=Math.max(1,Math.round(to/40)); const iv=setInterval(()=>{cc+=step; if(cc>=to){cc=to; clearInterval(iv)} c.textContent=cc},28)})}
 }})},{threshold:.18});
 document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
 window.addEventListener('scroll',()=>{const h=document.documentElement; const p=(h.scrollTop/(h.scrollHeight-h.clientHeight||1))*100; document.getElementById('progressBar').style.width=p+'%'});

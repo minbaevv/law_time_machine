@@ -67,6 +67,15 @@ class H(BaseHTTPRequestHandler):
             if u.path == "/chat" or u.path == "/chat.html":
                 f = STATIC / "chat.html"
                 return self._serve(f)
+            if u.path.startswith("/static/"):
+                safe = Path(u.path).name
+                f = STATIC / safe
+                if f.exists():
+                    body = f.read_bytes()
+                    ctype = "image/svg+xml" if safe.endswith(".svg") else "application/octet-stream"
+                    self.send_response(200); self._headers(ctype, len(body)); self.end_headers(); self.wfile.write(body)
+                    log.info("GET static 200"); return
+                return self._json({"error": "not found"}, 404)
             if u.path == "/api/laws":
                 data = load_json(DATA_LAWS); year = int(q.get("year", ["2026"])[0])
                 out = []
