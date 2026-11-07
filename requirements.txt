@@ -1,0 +1,2 @@
+# KanunTime — stdlib only, no deps
+# Production: python stdlib ThreadingHTTPServer, no pip install needed.

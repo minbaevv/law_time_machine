@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="ru"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>KanunTime — AI Помощник</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+:root{--bg:#07090F;--surface:#0F1420;--border:#1E2A3A;--text:#E6EDF7;--muted:#9AA8C2;--gold:#E8A317}
+*{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,sans-serif;background:#07090F;color:#E6EDF7;min-height:100vh;display:flex;flex-direction:column}
+header{padding:16px 20px;border-bottom:1px solid #1E2A3A;display:flex;justify-content:space-between;align-items:center;background:#0B0F1A;position:sticky;top:0;z-index:10}
+a{color:#7FB0FF}
+.wrap{max-width:860px;margin:0 auto;width:100%;padding:22px 18px;flex:1;display:flex;flex-direction:column}
+.card{background:#0F1420;border:1px solid #1E2A3A;border-radius:16px;padding:14px 16px;margin:8px 0;animation:up .35s ease both}
+@keyframes up{from{opacity:0;transform:translateY(8px)}to{opacity:1}}
+.user{border-left:3px solid #E8A317}.ai{border-left:3px solid #3B82F6}
+.small{font-size:13px;color:#9AA8C2}
+.controls{display:flex;gap:10px;margin-top:12px}
+input{flex:1;padding:13px 14px;border-radius:10px;border:1px solid #2A3A52;background:#07090F;color:#fff}
+button{padding:13px 20px;border-radius:10px;border:0;background:#E6EDF7;color:#07090F;font-weight:800;cursor:pointer}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}
+.chips button{background:#161D2E;color:#E6EDF7;border:1px solid #1E2A3A;padding:7px 12px;border-radius:999px;font-size:13px}
+h1{font-family:"Space Grotesk",sans-serif;margin:4px 0}
+</style></head><body>
+<header><b style="font-family:'Space Grotesk'">KanunTime — AI</b><a href="/" style="font-weight:700">← На сайт</a></header>
+<div class="wrap">
+<h1>AI помощник</h1>
+<p class="small">Опиши проблему — найдём статьи из базы 1100+ и ответим (Claude Haiku 4.5, если настроен). Не юрконсультация.</p>
+<div class="chips"><button onclick="quick('Меня остановил ГАИ за скорость +25')">ГАИ скорость</button><button onclick="quick('Не платят зарплату')">Зарплата</button><button onclick="quick('Аренда устно, выгоняют')">Аренда</button><button onclick="quick('Одолжил 50000 по расписке')">Расписка</button></div>
+<div id="chat"></div>
+<div class="controls"><input id="q" placeholder="Твоя проблема..."/><button onclick="ask()">Спросить</button></div>
+</div>
+<script>
+async function j(u){return (await fetch(u)).json()}
+function quick(s){document.getElementById('q').value=s;ask()}
+async function ask(){
+  const v=document.getElementById('q').value.trim(); if(!v) return;
+  const c=document.getElementById('chat');
+  c.innerHTML+='<div class="card user"><b>'+v+'</b></div><div class="small">Ищу...</div>';
+  c.scrollTop=c.scrollHeight;
+  const d=await j('/api/assistant?q='+encodeURIComponent(v));
+  c.lastElementChild.remove();
+  c.innerHTML+='<div class="card ai"><p style="margin:0 0 10px">'+d.summary+'</p><div style="display:grid;gap:8px">'+d.hits.map(h=>'<div style="padding:10px;border:1px solid #1E2A3A;border-radius:10px"><b>'+h.title+'</b><div class="small">'+h.article+'</div><p class="small" style="color:#C3CFE3">'+h.text.slice(0,300)+'...</p><small><a href="'+h.source_url+'" target="_blank">zakon.kg</a> • <a href="'+h.cbd_url+'" target="_blank">CBD</a></small></div>').join('')+'</div><p><b>Шаги:</b></p><ul style="color:#C3CFE3">'+d.steps.map(s=>'<li>'+s+'</li>').join('')+'</ul><p class="small">'+d.disclaimer+(d.ai_used?' • AI: '+d.ai_model:' • локальный поиск')+'</p></div>';
+  c.scrollTop=c.scrollHeight;
+  document.getElementById('q').value='';
+}
+</script></body></html>

@@ -1,0 +1,365 @@
+<!doctype html>
+<html lang="ru"><head><meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>KanunTime — Машина времени + Суд КР</title>
+<meta name="description" content="Реальные тексты КоП и ГК КР с редакциями. Машина времени и симулятор суда на русском и кыргызском."/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --bg:#07090F; --surface:#0F1420; --surface2:#161D2E; --surface3:#1B253A;
+  --navy:#0B1E3A; --blue:#3B82F6; --teal:#2DD4BF; --gold:#E8A317;
+  --text:#E6EDF7; --muted:#9AA8C2; --border:#1E2A3A; --border2:#2A3A52;
+  --shadow:0 20px 60px rgba(0,0,0,.55); --shadow-sm:0 6px 20px rgba(0,0,0,.4);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;background:#07090F;color:#E6EDF7;line-height:1.62;-webkit-font-smoothing:antialiased;font-size:15.5px}
+h1,h2,h3,.hero h1{font-family:"Space Grotesk",Inter,system-ui,sans-serif;letter-spacing:-.03em}
+.hero h1{font-size:clamp(36px,5.2vw,62px);line-height:1.02;font-weight:700}
+.section-head h2{font-size:31px;line-height:1.15;font-weight:700}
+.logo b{font-family:"Space Grotesk",Inter,sans-serif;font-size:21px;font-weight:700}
+.badge{letter-spacing:.06em;text-transform:uppercase;font-size:11px}
+a{color:#7FB0FF;text-decoration:none}
+a:hover{text-decoration:underline}
+#progressBar{position:fixed;top:0;left:0;height:2px;width:0%;background:linear-gradient(90deg,#2DD4BF,#3B82F6,#E8A317);z-index:100}
+header{position:sticky;top:0;z-index:50;backdrop-filter:blur(16px);background:rgba(7,9,15,.86);border-bottom:1px solid #1E2A3A}
+.header-inner{max-width:1160px;margin:0 auto;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.logo{display:flex;align-items:center;gap:12px}
+.logo-mark{width:44px;height:44px;border-radius:10px;background:#0F1420;border:1px solid #2A3A52;display:grid;place-items:center;font-weight:900;color:#E8A317;letter-spacing:.02em;font-size:15px}
+.logo b{font-size:19px;letter-spacing:-.02em;color:#fff}
+.logo small{display:block;color:#9AA8C2;font-weight:500;font-size:12px}
+.header-nav{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.nav-btn{border:0;background:transparent;padding:10px 14px;border-radius:999px;font-weight:700;color:#9AA8C2;cursor:pointer;transition:.25s;font-size:14px}
+.nav-btn.on{background:#E6EDF7;color:#07090F}
+.nav-btn:hover{color:#fff;transform:translateY(-1px)}
+.nav-btn.on:hover{color:#07090F}
+.lang-switch{display:flex;background:#0F1420;border-radius:999px;padding:4px;border:1px solid #1E2A3A}
+.lang-switch button{border:0;background:transparent;padding:8px 14px;border-radius:999px;font-weight:800;cursor:pointer;color:#9AA8C2;transition:.25s}
+.lang-switch button.on{background:#E6EDF7;color:#07090F}
+.hero{max-width:1160px;margin:0 auto;padding:42px 20px 18px;position:relative}
+.hero-card{border-radius:20px;padding:42px 36px;color:#E6EDF7;overflow:hidden;position:relative;background:radial-gradient(700px 320px at 18% 0%, rgba(59,130,246,.18), transparent 60%), radial-gradient(600px 320px at 92% 18%, rgba(45,212,191,.14), transparent 55%), #0B0F1A;border:1px solid #1E2A3A;box-shadow:0 24px 70px rgba(0,0,0,.6)}
+.hero-grid{display:grid;grid-template-columns:1.25fr .75fr;gap:28px;align-items:center}
+@media(max-width:860px){.hero-grid{grid-template-columns:1fr}}
+.badge{display:inline-flex;gap:8px;align-items:center;background:#0F1420;border:1px solid #2A3A52;color:#9AA8C2;padding:6px 12px;border-radius:999px;font-size:12.5px;font-weight:700}
+.badge::before{content:"";width:7px;height:7px;border-radius:50%;background:#2DD4BF}
+.hero h1{font-size:clamp(32px,5vw,56px);line-height:1.02;letter-spacing:-.04em;margin:16px 0 14px;color:#fff}
+.hero h1 em{font-style:normal;color:#E8A317}
+.hero p.lead{color:#C3CFE3;font-size:17px;max-width:620px;margin:0}
+.hero-cta{display:flex;gap:12px;margin:24px 0 18px;flex-wrap:wrap}
+.btn{border:0;border-radius:10px;padding:14px 22px;font-weight:800;cursor:pointer;transition:.22s;display:inline-flex;gap:10px;align-items:center;font-size:15px}
+.btn-gold{background:#E8A317;color:#07090F}
+.btn-ghost{background:transparent;color:#E6EDF7;border:1px solid #2A3A52}
+.btn:hover{transform:translateY(-2px)}
+.trust{font-size:13px;color:#9AA8C2}
+.trust a{color:#7FB0FF;font-weight:700}
+.hero-stats{background:#0F1420;border:1px solid #1E2A3A;border-radius:16px;padding:18px}
+.stat-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-top:12px}
+.stat{background:#07090F;border:1px solid #1E2A3A;border-radius:12px;padding:12px;text-align:center}
+.stat b{font-size:26px;display:block;color:#fff}
+.stat span{font-size:12px;color:#9AA8C2;font-weight:700}
+.section{max-width:1160px;margin:0 auto;padding:28px 20px;scroll-margin-top:88px}
+.section-head{display:flex;align-items:end;justify-content:space-between;gap:16px;margin:10px 0 18px;flex-wrap:wrap}
+.section-head h2{font-size:28px;letter-spacing:-.03em;margin:0;color:#fff}
+.section-head p{color:#9AA8C2;margin:6px 0 0;max-width:720px}
+.cards3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+@media(max-width:860px){.cards3{grid-template-columns:1fr}}
+.mini-card{background:#0F1420;border:1px solid #1E2A3A;border-radius:16px;padding:22px;transition:.25s}
+.mini-card:hover{border-color:#2A3A52;transform:translateY(-3px)}
+.mini-num{width:40px;height:40px;border-radius:10px;background:#07090F;border:1px solid #2A3A52;color:#E8A317;display:grid;place-items:center;font-weight:900;font-size:14px;margin-bottom:12px}
+.mini-card h3{color:#fff;margin:0 0 8px}
+.small{font-size:13px;color:#9AA8C2}
+.app-shell{background:#0F1420;border:1px solid #1E2A3A;border-radius:18px;box-shadow:0 20px 60px rgba(0,0,0,.5);overflow:hidden}
+.app-top{padding:16px 18px;border-bottom:1px solid #1E2A3A;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;background:#0B0F1A}
+.tabs{display:flex;gap:8px;flex-wrap:wrap}
+.tab{border:0;background:#161D2E;padding:11px 18px;border-radius:999px;font-weight:800;color:#9AA8C2;cursor:pointer;transition:.25s;border:1px solid #1E2A3A}
+.tab.on{background:#E6EDF7;color:#07090F}
+.controls{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+select,input[type="text"]{padding:12px 14px;border-radius:10px;border:1px solid #2A3A52;background:#07090F;color:#E6EDF7;font-weight:600}
+.btn-primary{background:#E6EDF7;color:#07090F;border:0;padding:12px 20px;border-radius:10px;font-weight:800;cursor:pointer;transition:.2s}
+.btn-primary:hover{transform:translateY(-1px)}
+.btn-soft{background:#161D2E;border:1px solid #1E2A3A;padding:12px 16px;border-radius:10px;font-weight:800;cursor:pointer;color:#E6EDF7}
+.panel{padding:20px}
+.note{border-radius:12px;padding:14px 16px;background:#161D2E;border:1px solid #2A3A52;margin:14px 0;color:#C3CFE3}
+.law-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+@media(max-width:860px){.law-grid{grid-template-columns:1fr}}
+.law-card{border:1px solid #1E2A3A;border-radius:14px;padding:18px;background:#0B0F1A;transition:.22s;animation:up .4s ease both}
+@keyframes up{from{opacity:0;transform:translateY(8px)}to{opacity:1}}
+.law-card:hover{border-color:#2A3A52}
+.law-card h4{margin:0 0 6px;font-size:17px;color:#fff}
+.meta{font-size:12.5px;color:#9AA8C2;font-weight:700}
+.fine{display:inline-block;margin-top:10px;background:#0E2E26;color:#2DD4BF;border:1px solid #14544A;padding:6px 10px;border-radius:999px;font-weight:800;font-size:13px}
+.opt{display:block;width:100%;text-align:left;margin:8px 0;padding:14px;border-radius:12px;border:1px solid #2A3A52;background:#07090F;color:#E6EDF7;cursor:pointer;font-weight:600;transition:.18s}
+.opt:hover{border-color:#3B82F6}
+.opt.ok{background:#0E2E1A;border-color:#1F5C35}
+.opt.bad{background:#2E1212;border-color:#5C1F1F}
+.kbd{background:#161D2E;border:1px solid #2A3A52;border-radius:999px;padding:3px 10px;font-size:12px;font-weight:800;color:#9AA8C2}
+footer{background:#05070C;border-top:1px solid #1E2A3A;color:#9AA8C2;margin-top:28px}
+.footer-inner{max-width:1160px;margin:0 auto;padding:34px 20px;display:grid;grid-template-columns:1.2fr .8fr;gap:20px}
+@media(max-width:860px){.footer-inner{grid-template-columns:1fr}}
+footer a{color:#7FB0FF}
+.reveal{opacity:0;transform:translateY(20px);transition:opacity .6s ease, transform .6s ease}
+.reveal.visible{opacity:1;transform:none}
+.reveal.delay1{transition-delay:.08s}.reveal.delay2{transition-delay:.16s}
+.fade-in{animation:fadeIn .45s ease both}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1}}
+.tick{color:#2DD4BF;font-weight:800}
+</style></head><body>
+<div id="progressBar"></div>
+<header>
+  <div class="header-inner reveal visible">
+    <div class="logo"><div class="logo-mark">KT</div><div><b>KanunTime</b><small data-i="tagline">Машина времени + Суд КР</small></div></div>
+    <nav class="header-nav">
+      <button class="nav-btn on" id="bT" onclick="navTo('t')" data-i="tab_time">Время</button>
+      <button class="nav-btn" id="bS" onclick="navTo('s')" data-i="tab_sim">Суд</button>
+      <button class="nav-btn" id="bQ" onclick="navTo('q')" data-i="tab_search">Поиск</button>
+      <button class="nav-btn" id="bA" onclick="navTo('a')" data-i="tab_assist">Помощник</button>
+      <div class="lang-switch" role="tablist" aria-label="Language">
+        <button id="lgRu" onclick="setLang('ru')" class="on">RU</button>
+        <button id="lgKy" onclick="setLang('ky')">KY</button>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="hero-card reveal visible">
+    <div class="hero-grid">
+      <div>
+        <span class="badge"><span data-i="badge">КоП 09.10.2026 · ГК 28.07.2026 · CBD Минюста</span></span>
+        <h1><span data-i="hero_t1">Закон на твой год.</span> <em data-i="hero_t2">Суд — в игре.</em></h1>
+        <p class="lead" data-i="hero_lead">Не чат-бот, а машина времени: выбираешь год — видишь штраф и статью той редакции. Плюс симулятор суда под реальные статьи. На русском и кыргызском.</p>
+        <div class="hero-cta">
+          <button class="btn btn-gold" onclick="gotoApp('t')"><span data-i="cta1">Открыть машину времени</span></button>
+          <button class="btn btn-ghost" onclick="gotoApp('s')"><span data-i="cta2">Запустить суд</span></button>
+        </div>
+        <p class="trust"><span data-i="trust">Источник: <a href="https://cbd.minjust.gov.kg/3-36/edition/60031/ru" target="_blank">CBD Минюста</a> (через zakon.kg). Не юрконсультация.</span></p>
+      </div>
+      <div class="hero-stats">
+        <div style="display:flex;justify-content:space-between;align-items:center"><b style="font-size:13px;color:#9AA8C2" data-i="live">LIVE-ДАННЫЕ</b><span class="kbd">1142 · 5 · 2</span></div>
+        <div class="stat-row">
+          <div class="stat"><b><span class="count" data-to="1142">0</span></b><span data-i="st1">статей</span></div>
+          <div class="stat"><b><span class="count" data-to="5">0</span></b><span data-i="st2">сценариев</span></div>
+          <div class="stat"><b><span class="count" data-to="2">0</span></b><span data-i="st3">кодекса</span></div>
+        </div>
+        <p class="small" style="margin:14px 0 0" data-i="st_note">Цифры с API. Данные — только с редакциями и ссылками.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="how">
+  <div class="section-head reveal"><div><h2 data-i="how_t">Как это работает</h2><p data-i="how_d">Три шага — и ты видишь закон глазами того года. Никаких выдуманных сумм.</p></div><span class="kbd">01 → 02 → 03</span></div>
+  <div class="cards3">
+    <div class="mini-card reveal"><div class="mini-num">01</div><h3 data-i="c1t">1. Выбери год</h3><p class="small" data-i="c1d">2015–2026. До 2019 действовал КоАП 1998, с 2019 — КоП. Покажем, почему дата решает.</p></div>
+    <div class="mini-card reveal delay1"><div class="mini-num">02</div><h3 data-i="c2t">2. Читай со ссылкой</h3><p class="small" data-i="c2d">Текст + номер статьи + редакция + ссылка в CBD. Без галлюцинаций.</p></div>
+    <div class="mini-card reveal delay2"><div class="mini-num">03</div><h3 data-i="c3t">3. Тренируйся в суде</h3><p class="small" data-i="c3d">Играй роль подсудимого. Судья спрашивает по настоящим статьям.</p></div>
+  </div>
+</section>
+
+<section class="section" id="app">
+  <div class="section-head reveal"><div><h2 data-i="app_t">Приложение</h2><p data-i="app_d">Тот же API, что в тестах. Переключай вкладки — контент не перезагружается.</p></div></div>
+  <div class="app-shell reveal">
+    <div class="app-top">
+      <div class="tabs">
+        <button class="tab on" id="tT" onclick="tab('t')" data-i="tab_time2">Машина времени</button>
+        <button class="tab" id="tS" onclick="tab('s')" data-i="tab_sim2">Симулятор суда</button>
+        <button class="tab" id="tQ" onclick="tab('q')" data-i="tab_search2">Поиск</button>
+        <button class="tab" id="tA" onclick="tab('a')" data-i="tab_assist">Помощник</button>
+      </div>
+      <span class="kbd" id="langBadge">RU</span>
+    </div>
+
+    <div id="t" class="panel">
+      <div class="controls">
+        <label><b data-i="choose_year">Выбери год:</b></label>
+        <select id="yr"><option>2015</option><option>2018</option><option>2019</option><option>2021</option><option selected>2026</option></select>
+        <button class="btn-primary" onclick="loadLaws()" data-i="show_law">Показать закон на этот год</button>
+      </div>
+      <div id="tnote" class="note"></div>
+      <div id="laws" class="law-grid"></div>
+    </div>
+
+    <div id="s" class="panel" style="display:none">
+      <div class="controls">
+        <label><b data-i="scenario">Сценарий:</b></label>
+        <select id="sc"></select>
+        <button class="btn-primary" onclick="startSim()" data-i="start">Начать</button>
+        <button class="btn-soft" onclick="dlCheck()" data-i="dl">Скачать чек-лист .txt</button>
+      </div>
+      <div id="sdesc"></div>
+      <div id="sim"></div>
+    </div>
+
+    <div id="q" class="panel" style="display:none">
+      <div class="controls">
+        <input id="qq" type="text" placeholder="скорость, зарплата, договор, расписка..." onkeydown="if(event.key==='Enter')doSearch()"/>
+        <button class="btn-primary" onclick="doSearch()" data-i="find">Найти</button>
+      </div>
+      <p class="small" data-i="q_hint">Подсказка: «187», «ст.90», «ГК 545» или «зарплат».</p>
+      <div id="hits" class="law-grid" style="margin-top:12px"></div>
+    </div>
+    <div id="a" class="panel" style="display:none">
+      <p class="small" data-i="assist_hint">Опиши проблему своими словами — помощник найдёт статьи из базы 1100+ и даст шаги. Не юрконсультация.</p>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin:10px 0"><button class="kbd" onclick="quick('Меня остановил ГАИ за скорость +25')">ГАИ скорость</button><button class="kbd" onclick="quick('Не платят зарплату 3 месяца')">Зарплата</button><button class="kbd" onclick="quick('Сдали квартиру устно, выгоняют')">Аренда устно</button><button class="kbd" onclick="quick('Одолжил 50000 по расписке, не отдают')">Расписка</button></div>
+      <div id="achat" style="display:grid;gap:10px;margin:12px 0;max-height:420px;overflow:auto"></div>
+      <div class="controls"><input id="aq" type="text" placeholder="Напр: меня остановили за скорость..." style="flex:1" onkeydown="if(event.key==='Enter')ask()"/><button class="btn-primary" onclick="ask()" data-i="send">Спросить</button></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-inner">
+    <div>
+      <h3 style="margin:0 0 8px;color:#fff">KanunTime</h3>
+      <p style="margin:0;max-width:640px" data-i="foot_t">Реальные тексты с редакциями для тренировки. Перед реальным делом — адвокат и сверка в CBD.</p>
+    </div>
+    <div>
+      <b style="color:#fff">Links</b>
+      <p style="margin:8px 0 0"><a href="https://cbd.minjust.gov.kg/3-36/edition/60031/ru" target="_blank">КоП 60031</a> · <a href="https://cbd.minjust.gov.kg/5/edition/57490/ru" target="_blank">ГК ч.2 57490</a><br><span data-i="foot_s">Тесты: ALL REAL PASS (1142 статей, 5 сценариев).</span></p>
+    </div>
+  </div>
+</footer>
+
+<script>
+const I = {
+ ru:{
+  tagline:"Машина времени + Суд КР", tab_time:"Время", tab_sim:"Суд", tab_search:"Поиск",
+  tab_time2:"Машина времени", tab_sim2:"Симулятор суда", tab_search2:"Поиск",
+  badge:"КоП 09.10.2026 · ГК 28.07.2026 · CBD Минюста",
+  hero_t1:"Закон на твой год.", hero_t2:"Суд — в игре.",
+  hero_lead:"Не чат-бот, а машина времени: выбираешь год — видишь штраф и статью той редакции. Плюс симулятор суда под реальные статьи. На русском и кыргызском.",
+  cta1:"Открыть машину времени", cta2:"Запустить суд",
+  trust:"Источник: CBD Минюста (через zakon.kg). Не юрконсультация.",
+  live:"LIVE-ДАННЫЕ",
+  st1:"статей", st2:"сценариев", st3:"кодекса",
+  st_note:"Цифры с API. Данные — только с редакциями и ссылками.",
+  how_t:"Как это работает", how_d:"Три шага — и ты видишь закон глазами того года. Никаких выдуманных сумм.",
+  c1t:"1. Выбери год", c1d:"2015–2026. До 2019 действовал КоАП 1998, с 2019 — КоП. Покажем, почему дата решает.",
+  c2t:"2. Читай со ссылкой", c2d:"Текст + номер статьи + редакция + ссылка в CBD. Без галлюцинаций.",
+  c3t:"3. Тренируйся в суде", c3d:"Играй роль подсудимого. Судья спрашивает по настоящим статьям.",
+  app_t:"Приложение", app_d:"Тот же API, что в тестах. Переключай вкладки — контент не перезагружается.",
+  choose_year:"Выбери год:", show_law:"Показать закон на этот год",
+  scenario:"Сценарий:", start:"Начать", dl:"Скачать чек-лист .txt", find:"Найти",
+  q_hint:"Подсказка: «187», «ст.90», «ГК 545» или «зарплат».",
+  foot_t:"Реальные тексты с редакциями для тренировки. Перед реальным делом — адвокат и сверка в CBD.",
+  foot_s:"Тесты: ALL REAL PASS (1142 статей, 5 сценариев).",
+  time_label:"Пояснение времени:", edition_label:"Редакция:",
+  fine_label:"Штраф:", text_zakon:"текст zakon.kg", text_cbd:"CBD",
+  step_label:"Шаг", final_label:"Финал:", checklist_label:"Чек-лист в суд:",
+  train_note:"Это тренировка. Для реального дела обратись к адвокату.",
+  next_label:"Далее →", no_hits:"Ничего не найдено — попробуй «скорость», «зарплата», «договор».",
+  ph_search:"скорость, зарплата, договор, расписка...",
+  tab_assist:"Помощник", assist_hint:"Опиши проблему своими словами — помощник найдёт статьи из базы 1100+ и даст шаги. Не юрконсультация.", send:"Спросить", official_ru:"Официальный текст на русском (CBD). Интерфейс — по выбору."
+ },
+ ky:{
+  tagline:"Убакыт машинасы + КР Соту", tab_time:"Убакыт", tab_sim:"Сот", tab_search:"Издөө",
+  tab_time2:"Убакыт машинасы", tab_sim2:"Сот симулятору", tab_search2:"Издөө",
+  badge:"КоП 09.10.2026 · ГК 28.07.2026 · СДБ сот министерлиги",
+  hero_t1:"Мыйзам — сенин жылыңда.", hero_t2:"Сот — оюнда.",
+  hero_lead:"Чат-бот эмес, убакыт машинасы: жылды тандайсың — ошол жылдын айыбын жана беренесин көрөсүң. Мындан тышкары чыныгы беренелер менен сот симулятору. RU жана KY.",
+  cta1:"Убакыт машинасын ачуу", cta2:"Сотту баштоо",
+  trust:"Булак: СДБ сот министрлиги (zakon.kg аркылуу). Юридикалык кеңеш эмес.",
+  live:"LIVE-МААЛЫМАТ",
+  st1:"берене", st2:"сценарий", st3:"кодекс",
+  st_note:"Сандар APIден алынат. Маалымат — редакция жана шилтеме менен.",
+  how_t:"Кантип иштейт", how_d:"Үч кадам — мыйзамды ошол жылдын көзү менен көрөсүң. Ойлонулган сан жок.",
+  c1t:"1. Жылды танда", c1d:"2015–2026. 2019га чейин КоАП 1998, 2019ден баштап КоП. Убакыт эмнеге маанилүү экенин көрсөтөбүз.",
+  c2t:"2. Шилтеме менен оку", c2d:"Текст + берене номери + редакция + СДБ шилтемеси. Галлюцинациясыз.",
+  c3t:"3. Сотто машык", c3d:"Айыпталуучунун ролун ойноп чык. Судья чыныгы берене менен сурайт.",
+  app_t:"Тиркеме", app_d:"Тесттеги API эле. Бөтөлмө алмаштырып көр — мазмун кайра жүктөлбөйт.",
+  choose_year:"Жылды тандаңыз:", show_law:"Ошол жылдын мыйзамын көрсөтүү",
+  scenario:"Сценарий:", start:"Баштоо", dl:"Чек-листти жүктөп алуу .txt", find:"Табуу",
+  q_hint:"Күндөмкө: «187», «ст.90», «ГК 545» же «айлык».",
+  foot_t:"Машыгууга арналган чыныгы тексттер. Чын иштен мурун — адвокат жана СДБде текшерүү.",
+  foot_s:"Тесттер: ALL REAL PASS (1142 берене, 5 сценарий).",
+  time_label:"Убакыт түшүндүрмөсү:", edition_label:"Редакция:",
+  fine_label:"Айып:", text_zakon:"zakon.kg текст", text_cbd:"СДБ",
+  step_label:"Кадам", final_label:"Жыйынтык:", checklist_label:"Сотко чек-лист:",
+  train_note:"Бул машыгуу. Чын иш үчүн адвокатKER кайрыл.",
+  next_label:"Кийинки →", no_hits:"Эч нерсе табылган жок — «ылдамдык», «айлык», «келишим» дегенди аракет кыл.",
+  ph_search:"ылдамдык, айлык, келишим, акча кат...",
+  tab_assist:"Жардамчы", assist_hint:"Көйгөйүңдү жаз — жардамчы 1100+ берененин ичинде табат. Кеңеш эмес.", send:"Суроо", official_ru:"Расмий текст орусча (СДБ). Интерфейс — тандоо боюнча."
+ }
+};
+let lang = localStorage.getItem('ltm-lang') || 'ru';
+let loaded=false, cur=null, step=0, score=0;
+function t(k){return (I[lang]&&I[lang][k])||I.ru[k]||k}
+function setLang(l){lang=l;localStorage.setItem('ltm-lang',l);applyLang();loadLaws();if(loaded)loadScRefresh()}
+function applyLang(){
+  document.documentElement.lang = lang==='ky'?'ky':'ru';
+  document.querySelectorAll('[data-i]').forEach(el=>{const k=el.getAttribute('data-i'); if(I[lang][k]) el.textContent=I[lang][k]});
+  document.getElementById('qq').placeholder = t('ph_search');
+  document.getElementById('lgRu').className = lang==='ru'?'on':'';
+  document.getElementById('lgKy').className = lang==='ky'?'on':'';
+  document.getElementById('langBadge').textContent = lang.toUpperCase();
+}
+function tab(x){tEl('t').style.display=x==='t'?'block':'none';tEl('s').style.display=x==='s'?'block':'none';tEl('q').style.display=x==='q'?'block':'none';tEl('a').style.display=x==='a'?'block':'none';
+  [['bT','t'],['bS','s'],['bQ','q'],['bA','a']].forEach(([id,v])=>{const el=document.getElementById(id); if(el) el.className='nav-btn'+(x===v?' on':'')});
+  [['tT','t'],['tS','s'],['tQ','q'],['tA','a']].forEach(([id,v])=>{const el=document.getElementById(id); if(el) el.className='tab'+(x===v?' on':'')});
+  if(x==='s'&&!loaded) loadSc();
+}
+function tEl(id){return document.getElementById(id)}
+function navTo(x){tab(x); setTimeout(()=>{document.getElementById('app').scrollIntoView({behavior:'smooth',block:'start'})},80)}
+function gotoApp(x){navTo(x)}
+async function j(u){return (await fetch(u)).json()}
+async function loadLaws(){
+  const y=document.getElementById('yr').value;
+  const d=await j('/api/laws?year='+y);
+  document.getElementById('tnote').innerHTML='<p style="margin:0 0 6px"><b>'+t('time_label')+'</b> '+d.time_note+'</p><p style="margin:0"><small>'+t('edition_label')+' '+d.edition_note+'</small></p><p style="margin:8px 0 0"><small>'+t('official_ru')+'</small></p>';
+  document.getElementById('laws').innerHTML=d.results.map((r,i)=>'<div class="law-card fade-in" style="animation-delay:'+(i*70)+'ms"><h4>'+r.title+'</h4><div class="meta">'+r.article+' • '+t('edition_label')+' '+(r.edition||'—')+'</div><p style="margin:10px 0;color:#C3CFE3">'+r.text+'</p><span class="fine">'+t('fine_label')+' '+(r.fine_demo||'—')+'</span><div class="small" style="margin-top:10px"><a href="'+r.source_url+'" target="_blank">'+t('text_zakon')+'</a> • <a href="'+r.cbd_url+'" target="_blank">'+t('text_cbd')+'</a></div></div>').join('');
+}
+async function loadScRefresh(){loaded=false; await loadSc()}
+async function loadSc(){
+  loaded=true;
+  const d=await j('/api/scenarios');
+  document.getElementById('sc').innerHTML=d.scenarios.map(s=>'<option value="'+s.id+'">'+s.title+' ('+s.year+') — '+s.articles.join(', ')+'</option>').join('');
+}
+async function startSim(){
+  const id=document.getElementById('sc').value;
+  cur=(await j('/api/simulate?id='+id)).scenario; step=0; score=0;
+  document.getElementById('sdesc').innerHTML='<div class="note"><b>'+cur.title+'</b> • '+cur.articles.join(', ')+'<br><span class="small">'+cur.description+'</span></div>';
+  showStep();
+}
+async function showStep(){
+  if(step>=cur.steps.length){
+    document.getElementById('sim').innerHTML='<h3>'+t('final_label')+' '+score+'/'+cur.steps.length+'</h3><b>'+t('checklist_label')+'</b><ul>'+cur.checklist.map(x=>'<li>'+x+'</li>').join('')+'</ul><p class="small">'+t('train_note')+'</p>';
+    return;
+  }
+  const st=cur.steps[step];
+  document.getElementById('sim').innerHTML='<p><b>'+t('step_label')+' '+(step+1)+'/'+cur.steps.length+'</b></p><p style="font-size:17px;font-weight:700;color:#fff">'+st.q+'</p>'
+    +st.options.map((o,i)=>'<button class="opt" onclick="ans('+i+',this)">'+o+'</button>').join('')+'<div id="why"></div>';
+}
+async function ans(pick,btn){
+  const d=await j('/api/answer?id='+cur.id+'&step='+step+'&pick='+pick);
+  btn.className='opt '+(d.correct?'ok':'bad');
+  if(d.correct) score++;
+  document.getElementById('why').innerHTML='<p>'+(d.correct?'<span class="tick">✓</span> ':'<span style="color:#F87171;font-weight:800">✕</span> ')+d.why+'</p><button class="btn-primary" onclick="next()">'+t('next_label')+'</button>';
+}
+function next(){step++;showStep()}
+function dlCheck(){if(cur) location.href='/api/checklist?id='+cur.id}
+async function doSearch(){
+  const v=document.getElementById('qq').value.trim(); if(!v) return;
+  const d=await j('/api/search?q='+encodeURIComponent(v));
+  document.getElementById('hits').innerHTML=d.hits.map(h=>'<div class="law-card fade-in"><h4>'+h.title+'</h4><div class="meta">'+h.article+'</div><p style="color:#C3CFE3">'+h.text+'</p><div class="small"><a href="'+h.source_url+'" target="_blank">'+t('text_zakon')+'</a> • <a href="'+h.cbd_url+'" target="_blank">'+t('text_cbd')+'</a></div></div>').join('')||'<p class="small">'+t('no_hits')+'</p>';
+  document.getElementById('hits').innerHTML=d.hits.map(h=>'<div class="law-card fade-in"><h4>'+h.title+'</h4><div class="meta">'+h.article+'</div><p style="color:#C3CFE3">'+h.text+'</p><div class="small"><a href="'+h.source_url+'" target="_blank">'+t('text_zakon')+'</a> • <a href="'+h.cbd_url+'" target="_blank">'+t('text_cbd')+'</a></div></div>').join('')||'<p class="small">'+t('no_hits')+'</p>';
+}
+function quick(s){document.getElementById('aq').value=s; ask()}
+async function ask(){
+  const v=document.getElementById('aq').value.trim(); if(!v) return;
+  const chat=document.getElementById('achat');
+  chat.innerHTML+='<div class="law-card fade-in" style="border-left:3px solid #E8A317"><b>'+v+'</b></div><div class="small">Ищу по 1100+ статьям...</div>';
+  chat.scrollTop=chat.scrollHeight;
+  const d=await j('/api/assistant?q='+encodeURIComponent(v)+'&lang='+lang);
+  const last=chat.lastElementChild; if(last) last.remove();
+  chat.innerHTML+='<div class="law-card fade-in" style="background:#0B0F1A"><p style="margin:0 0 10px;color:#E6EDF7">'+d.summary+'</p><div style="display:grid;gap:8px">'+d.hits.map(h=>'<div style="padding:10px;border:1px solid #1E2A3A;border-radius:10px"><b style="color:#fff">'+h.title+'</b><div class="meta">'+h.article+'</div><p class="small" style="color:#C3CFE3;margin:6px 0">'+h.text.slice(0,320)+'...</p><small><a href="'+h.source_url+'" target="_blank">'+t('text_zakon')+'</a> • <a href="'+h.cbd_url+'" target="_blank">'+t('text_cbd')+'</a></small></div>').join('')+'</div><p style="margin:12px 0 0"><b>'+t('checklist_label')+'</b></p><ul style="color:#C3CFE3">'+d.steps.map(s=>'<li>'+s+'</li>').join('')+'</ul><p class="small">'+d.disclaimer+'</p></div>';
+  chat.scrollTop=chat.scrollHeight;
+  document.getElementById('aq').value='';
+}
+const io=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');
+  if(e.target.querySelector('.count')){e.target.querySelectorAll('.count').forEach(c=>{const to=+c.dataset.to; let cc=0; const iv=setInterval(()=>{cc++; c.textContent=cc; if(cc>=to) clearInterval(iv)},60)})}
+}})},{threshold:.18});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+window.addEventListener('scroll',()=>{const h=document.documentElement; const p=(h.scrollTop/(h.scrollHeight-h.clientHeight||1))*100; document.getElementById('progressBar').style.width=p+'%'});
+applyLang(); loadLaws();
+</script></body></html>
